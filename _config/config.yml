@@ -1,0 +1,105 @@
+---
+Name: silverwind-settings
+---
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    - Antlion\SilverwindSettings\Extensions\SiteConfigThemeExtension
+    - Antlion\SilverwindSettings\Extensions\SiteConfigHeaderFooterExtension
+
+SilverStripe\CMS\Controllers\ContentController:
+  extensions:
+    - Antlion\SilverwindSettings\Extensions\ThemeSettingsControllerExtension
+
+Antlion\SilverwindSettings\ThemeSettings:
+  # Selector the generated custom properties are written to. The extra
+  # attribute makes it outrank daisyUI's [data-theme=...] theme block, and
+  # because the <style> is unlayered it also beats Tailwind's @layer theme.
+  selector: ':root[data-theme]'
+
+  # Shown as placeholders in the CMS so editors can see what "empty" means.
+  # Keep these in sync with themes/silverwind/src/css/theme.css.
+  theme_defaults:
+    Primary: '#005ae1'
+    Secondary: '#222222'
+    Accent: '#8fbe00'
+    Neutral: '#1f2937'
+    Base: '#ffffff'
+    BaseContent: '#1f2937'
+    Info: '#0284c7'
+    Success: '#15803d'
+    Warning: '#f59e0b'
+    Error: '#dc2626'
+
+  # Field => daisyUI colour token. Each also gets a computed *-content
+  # (readable text on that colour) unless it's the text colour itself.
+  colour_tokens:
+    Primary: primary
+    Secondary: secondary
+    Accent: accent
+    Neutral: neutral
+    Base: base-100
+    BaseContent: base-content
+    Info: info
+    Success: success
+    Warning: warning
+    Error: error
+
+  # Preset scales. Keys are what's stored; empty value = theme default.
+  font_scales:
+    small: { label: 'Small (94%)', value: '93.75%' }
+    default: { label: 'Default (100%)', value: '' }
+    large: { label: 'Large (106%)', value: '106.25%' }
+    larger: { label: 'Larger (113%)', value: '112.5%' }
+  container_widths:
+    narrow: { label: 'Narrow (1024px)', value: '64rem' }
+    medium: { label: 'Medium (1152px)', value: '72rem' }
+    default: { label: 'Wide (1280px)', value: '' }
+    wide: { label: 'Extra wide (1440px)', value: '90rem' }
+    full: { label: 'Full width', value: 'none' }
+  gutters:
+    compact: { label: 'Compact', value: '1rem' }
+    default: { label: 'Default', value: '' }
+    roomy: { label: 'Roomy', value: '2rem' }
+  section_spacings:
+    compact: { label: 'Compact', value: '2.5rem' }
+    default: { label: 'Default', value: '' }
+    relaxed: { label: 'Relaxed', value: '6rem' }
+  # Corner style sets daisyUI's three radius tokens together.
+  corner_styles:
+    square: { label: 'Square', box: '0', field: '0', selector: '0' }
+    subtle: { label: 'Subtle', box: '0.25rem', field: '0.25rem', selector: '0.25rem' }
+    default: { label: 'Rounded', box: '', field: '', selector: '' }
+    soft: { label: 'Soft', box: '1rem', field: '0.5rem', selector: '0.75rem' }
+    pill: { label: 'Pill', box: '1.5rem', field: '2rem', selector: '2rem' }
+  border_widths:
+    default: { label: 'Thin (1px)', value: '' }
+    thick: { label: 'Thick (2px)', value: '2px' }
+
+  # Google Fonts offered in the CMS. `axes` is the css2 API axis spec (must
+  # match what the family actually provides, or Google returns a 400);
+  # `fallback` is the generic stack appended after the family.
+  fonts:
+    'Inter': { axes: 'wght@400..700', fallback: sans }
+    'Geist': { axes: 'wght@400..700', fallback: sans }
+    'Instrument Sans': { axes: 'wght@400..700', fallback: sans }
+    'DM Sans': { axes: 'wght@400..700', fallback: sans }
+    'Manrope': { axes: 'wght@400..700', fallback: sans }
+    'Work Sans': { axes: 'wght@400..700', fallback: sans }
+    'Roboto': { axes: 'wght@400..700', fallback: sans }
+    'Open Sans': { axes: 'wght@400..700', fallback: sans }
+    'Source Sans 3': { axes: 'wght@400..700', fallback: sans }
+    'Nunito': { axes: 'wght@400..700', fallback: sans }
+    'Montserrat': { axes: 'wght@400..700', fallback: sans }
+    'Poppins': { axes: 'wght@400;500;600;700', fallback: sans }
+    'Lato': { axes: 'wght@400;700', fallback: sans }
+    'Oswald': { axes: 'wght@400..700', fallback: sans }
+    'Playfair Display': { axes: 'wght@400..700', fallback: serif }
+    'Lora': { axes: 'wght@400..700', fallback: serif }
+    'Merriweather': { axes: 'wght@400;700', fallback: serif }
+    'Libre Baskerville': { axes: 'wght@400;700', fallback: serif }
+    'Roboto Slab': { axes: 'wght@400..700', fallback: serif }
+
+  fallback_stacks:
+    sans: 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+    serif: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif'
+    mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'

@@ -1,0 +1,36 @@
+{
+    "name": "antlion/silverwind-settings",
+    "description": "Design-token settings (colours, typography, layout, shape) for the Silverwind theme, edited in the CMS Settings area",
+    "type": "silverstripe-vendormodule",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "silverstripe",
+        "silverwind",
+        "tailwind",
+        "daisyui",
+        "theme",
+        "siteconfig"
+    ],
+    "require": {
+        "php": "^8.3",
+        "silverstripe/framework": "^6.0",
+        "silverstripe/siteconfig": "^6.0",
+        "silverstripe/asset-admin": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Antlion\\SilverwindSettings\\": "src/",
+            "Antlion\\SilverwindSettings\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "expose": [
+            "client"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

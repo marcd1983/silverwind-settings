@@ -1,0 +1,34 @@
+.sw-colorfield {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 22rem;
+}
+
+.sw-colorfield__swatch {
+  flex: none;
+  width: 2.5rem;
+  height: 2.25rem;
+  padding: 0.125rem;
+  border: 1px solid #ced5e1;
+  border-radius: 0.25rem;
+  background: #fff;
+  cursor: pointer;
+}
+
+.sw-colorfield__swatch:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.sw-colorfield .sw-colorfield__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-transform: lowercase;
+}
+
+.sw-colorfield__reset {
+  flex: none;
+  white-space: nowrap;
+}
