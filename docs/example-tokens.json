@@ -1,0 +1,27 @@
+{
+  "color": {
+    "primary": {
+      "$type": "color",
+      "$value": { "colorSpace": "srgb", "components": [0.1843, 0.4196, 0.2275], "alpha": 1, "hex": "#2F6B3A" },
+      "$extensions": { "com.figma.variableId": "VariableID:1:2", "com.figma.scopes": ["ALL_SCOPES"] }
+    },
+    "secondary": { "$type": "color", "$value": { "colorSpace": "srgb", "components": [0.1216, 0.1647, 0.1412], "alpha": 1, "hex": "#1F2A24" } },
+    "accent": { "$type": "color", "$value": { "colorSpace": "srgb", "components": [0.7843, 0.5882, 0.2431], "alpha": 1, "hex": "#C8963E" } },
+    "base": { "$type": "color", "$value": "#FBFAF6" },
+    "base-content": { "$type": "color", "$value": "{color.text-strong}" },
+    "text-strong": { "$type": "color", "$value": "#1C2420" }
+  },
+  "font": {
+    "heading": { "$type": "fontFamily", "$value": "Playfair Display" },
+    "body": { "$type": "fontFamily", "$value": ["DM Sans", "sans-serif"] }
+  },
+  "size": {
+    "container": { "$type": "dimension", "$value": { "value": 1200, "unit": "px" } },
+    "gutter": { "$type": "dimension", "$value": { "value": 24, "unit": "px" } },
+    "section-spacing": { "$type": "dimension", "$value": { "value": 96, "unit": "px" } }
+  },
+  "radius": {
+    "box": { "$type": "dimension", "$value": { "value": 16, "unit": "px" } },
+    "button": { "$type": "dimension", "$value": { "value": 999, "unit": "px" } }
+  }
+}

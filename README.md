@@ -35,6 +35,45 @@ vendor/bin/sake db:build --flush
 No template changes are needed: the module adds its output to `<head>` on
 every front-end page.
 
+## Design tokens (Figma)
+
+A client's brand can come straight from their design file. Export the
+Figma variables as JSON, save it in the site as `design/tokens.json`, and:
+
+```sh
+vendor/bin/sake tasks:import-design-tokens --dry-run   # show what would change
+vendor/bin/sake tasks:import-design-tokens             # apply to Settings > Theme
+vendor/bin/sake tasks:import-design-tokens --file=path/to/other.json
+```
+
+It reads W3C design tokens (DTCG: Figma's variable export and most token
+plugins, including colour objects and `{value, unit}` sizes), Tokens Studio
+files and plain `"color/primary": "#hex"` maps, and resolves references
+such as `{color.brand.500}`.
+
+| Setting | Token names (any leading group is ignored) | Applied as |
+|---|---|---|
+| Brand colours | `color/primary`, `color/secondary`, `color/accent`, `color/neutral`, `color/base` (or `color/background`), `color/base-content` (or `color/text`), `color/info`, `color/success`, `color/warning`, `color/error` | hex (transparency dropped, noted) |
+| Fonts | `font/heading`, `font/body` | must be in `ThemeSettings.fonts` |
+| Text size | `type/scale` (`1.0625`, `106%`) or `font/size-base` (`17px`) | nearest preset |
+| Site width | `size/container` (`1280px`, or `none` for full width) | nearest preset |
+| Side padding, section spacing | `size/gutter`, `size/section-spacing` | nearest preset |
+| Corners, borders | `radius/box`, `border/width` | nearest preset |
+
+Sizes snap to the nearest preset, measured in pixels, and the report lists
+every value it rounded, every token it couldn't use and every unknown font,
+so nothing changes silently. Re-running is safe (only differences are
+written), and editors can still adjust *Settings > Theme* afterwards.
+`docs/example-tokens.json` is a Figma-style export to try it with.
+
+Accept other token names in YAML:
+
+```yaml
+Antlion\SilverwindSettings\Tokens\TokenImporter:
+  token_map:
+    ThemePrimary: [colour, [color/primary, brand/main]]
+```
+
 ## How it works
 
 `ThemeSettings` turns the saved values into one unlayered `<style>` block:
