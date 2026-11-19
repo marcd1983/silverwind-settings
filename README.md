@@ -37,8 +37,11 @@ every front-end page.
 
 ## Design tokens (Figma)
 
-A client's brand can come straight from their design file. Export the
-Figma variables as JSON, save it in the site as `design/tokens.json`, and:
+A client's brand can come straight from their design file. Start client
+designs from the **Silverwind Kit** Figma file (variables, text styles and
+components named for these settings), so the export needs no renaming.
+Export the Figma variables as JSON, save it in the site as
+`design/tokens.json`, and:
 
 ```sh
 vendor/bin/sake tasks:import-design-tokens --dry-run   # show what would change
@@ -56,7 +59,7 @@ such as `{color.brand.500}`.
 | Brand colours | `color/primary`, `color/secondary`, `color/accent`, `color/neutral`, `color/base` (or `color/background`), `color/base-content` (or `color/text`), `color/info`, `color/success`, `color/warning`, `color/error` | hex (transparency dropped, noted) |
 | Fonts | `font/heading`, `font/body` | must be in `ThemeSettings.fonts` |
 | Text size | `type/scale` (`1.0625`, `106%`) or `font/size-base` (`17px`) | nearest preset |
-| Site width | `size/container` (`1280px`, or `none` for full width) | nearest preset |
+| Site width | `size/container` (`1280px`, or `none` / `0` for full width) | nearest preset |
 | Side padding, section spacing | `size/gutter`, `size/section-spacing` | nearest preset |
 | Corners, borders | `radius/box`, `border/width` | nearest preset |
 
@@ -64,6 +67,10 @@ Sizes snap to the nearest preset, measured in pixels, and the report lists
 every value it rounded, every token it couldn't use and every unknown font,
 so nothing changes silently. Re-running is safe (only differences are
 written), and editors can still adjust *Settings > Theme* afterwards.
+A colour equal to the theme's default is stored as "default", and the
+kit's helper variables (`color/*-content`, `color/base-200`/`-300`,
+`size/narrow`, `radius/field`, `radius/selector`) are expected and not
+reported (`TokenImporter.ignored_tokens`).
 `docs/example-tokens.json` is a Figma-style export to try it with.
 
 Accept other token names in YAML:

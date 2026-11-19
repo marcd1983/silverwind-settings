@@ -63,7 +63,7 @@ class TokenImporterTest extends SapphireTest
                 'color' => [
                     'primary' => ['$value' => '#2F6B3A', '$type' => 'color'],
                     'accent' => ['$value' => ['colorSpace' => 'srgb', 'components' => [0.784, 0.588, 0.243], 'alpha' => 1], '$type' => 'color'],
-                    'base' => ['$value' => 'rgba(255, 255, 255, 0.9)'],
+                    'base' => ['$value' => 'rgba(250, 250, 250, 0.9)'],
                 ],
                 'font' => ['heading' => ['$value' => ['Lora', 'Georgia', 'serif']], 'body' => ['$value' => 'inter']],
                 'size' => [
@@ -80,7 +80,7 @@ class TokenImporterTest extends SapphireTest
         $changes = array_column($plan['changes'], null, 'field');
         $this->assertSame('#2f6b3a', $changes['ThemePrimary']['to']);
         $this->assertSame('#c8963e', $changes['ThemeAccent']['to'], 'DTCG colour object');
-        $this->assertSame('#ffffff', $changes['ThemeBase']['to']);
+        $this->assertSame('#fafafa', $changes['ThemeBase']['to']);
         $this->assertSame('transparency dropped', $changes['ThemeBase']['note']);
         $this->assertSame('Lora', $changes['ThemeHeadingFont']['to'], 'first family of a stack');
         $this->assertSame('Inter', $changes['ThemeBodyFont']['to'], 'matched case-insensitively');
@@ -103,11 +103,28 @@ class TokenImporterTest extends SapphireTest
         $this->assertArrayNotHasKey('ThemeCornerStyle', $changes, '12px is the theme default: stored as "", already empty');
     }
 
+    public function testFigmaKitConventions(): void
+    {
+        $plan = $this->plan(['Silverwind' => [
+            'color' => [
+                'neutral' => ['$type' => 'color', '$value' => '#1F2937'],
+                'primary-content' => ['$type' => 'color', '$value' => '#ffffff'],
+                'base-300' => ['$type' => 'color', '$value' => '#e4e7ec'],
+            ],
+            'size' => ['container' => ['$type' => 'number', '$value' => 0], 'narrow' => ['$type' => 'number', '$value' => 768]],
+            'spacing' => ['card' => ['$type' => 'number', '$value' => 24]],
+        ]]);
+
+        $this->assertContains('ThemeNeutral', $plan['unchanged'], 'theme default colour is stored as "" (already empty)');
+        $this->assertSame('full', array_column($plan['changes'], 'to', 'field')['ThemeContainerWidth'], 'width 0 = full width');
+        $this->assertSame(['silverwind/spacing/card'], $plan['unmatched'], 'kit helper variables are not reported');
+    }
+
     public function testProblemsAreReportedNotApplied(): void
     {
         $plan = $this->plan([
             'font' => ['heading' => 'Comic Neue'],
-            'color' => ['primary' => 'tomato', 'secondary' => '#222222'],
+            'color' => ['primary' => 'tomato', 'secondary' => '#333333'],
             'spacing' => ['card-padding' => '24px'],
         ]);
 

@@ -114,8 +114,10 @@ class TokenFile
         foreach (array_keys($this->tokens) as $path) {
             $value = $this->tokens[$path]['value'];
             // A token that is only a reference takes the referenced token's type (DTCG)
-            if ($this->tokens[$path]['type'] === null && is_string($value)
-                && preg_match('/^\{([^{}]+)\}$/', trim($value), $m)) {
+            if (
+                $this->tokens[$path]['type'] === null && is_string($value)
+                && preg_match('/^\{([^{}]+)\}$/', trim($value), $m)
+            ) {
                 $this->tokens[$path]['type'] = $this->typeOf($m[1], [$path]);
             }
             $this->tokens[$path]['value'] = $this->resolve($value, [$path]);

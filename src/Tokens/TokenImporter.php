@@ -71,6 +71,20 @@ class TokenImporter
         'font_scales' => '100%',
     ];
 
+    /**
+     * Tokens that are expected but feed no setting (the Silverwind Figma
+     * kit's helper variables): left out of the "not used" report. Matched
+     * like token_map names, with * wildcards.
+     */
+    private static array $ignored_tokens = [
+        'color/*-content',
+        'color/base-200',
+        'color/base-300',
+        'size/narrow',
+        'radius/field',
+        'radius/selector',
+    ];
+
     public function __construct(private readonly TokenFile $tokens)
     {
     }
@@ -113,6 +127,13 @@ class TokenImporter
                 $plan['skipped'][] = ['field' => $field, 'token' => $path, 'reason' => $error];
                 continue;
             }
+            // A colour equal to the theme default is stored as "" (shown as default in the CMS)
+            if ($kind === 'colour') {
+                $default = ThemeSettings::config()->get('theme_defaults')[substr($field, 5)] ?? null;
+                if ($default !== null && Colour::normalise($default) === $value) {
+                    $value = '';
+                }
+            }
             $current = (string) $config->getField($field);
             if ($current === $value) {
                 $plan['unchanged'][] = $field;
@@ -121,7 +142,11 @@ class TokenImporter
             $plan['changes'][] = ['field' => $field, 'token' => $path, 'from' => $current, 'to' => $value, 'note' => $note];
         }
 
-        $plan['unmatched'] = array_values(array_diff(array_keys($this->tokens->all()), $used));
+        $ignored = static::config()->get('ignored_tokens') ?: [];
+        $plan['unmatched'] = array_values(array_filter(
+            array_diff(array_keys($this->tokens->all()), $used),
+            fn ($path) => !$this->matchesAny($path, $ignored)
+        ));
 
         return $plan;
     }
@@ -156,6 +181,19 @@ class TokenImporter
         return null;
     }
 
+    /** Whether a path is, or ends with, one of the patterns (* = any characters within a segment) */
+    private function matchesAny(string $path, array $patterns): bool
+    {
+        foreach ($patterns as $pattern) {
+            $regex = str_replace('\*', '[^/]*', preg_quote(TokenFile::normalisePath($pattern), '#'));
+            if (preg_match('#(^|/)' . $regex . '$#', $path)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // ---- Values ----------------------------------------------------------------
 
     /** @return array{0: string, 1: ?string, 2: ?string} [value, note, error] */
@@ -167,8 +205,10 @@ class TokenImporter
         if (is_array($raw)) {
             if (isset($raw['hex'])) {
                 $hex = $raw['hex'];
-            } elseif (isset($raw['components']) && count($raw['components']) >= 3
-                && in_array($raw['colorSpace'] ?? 'srgb', ['srgb', 'rgb'], true)) {
+            } elseif (
+                isset($raw['components']) && count($raw['components']) >= 3
+                && in_array($raw['colorSpace'] ?? 'srgb', ['srgb', 'rgb'], true)
+            ) {
                 $hex = '#' . implode('', array_map(
                     fn ($c) => str_pad(dechex((int) round(max(0, min(1, (float) $c)) * 255)), 2, '0', STR_PAD_LEFT),
                     array_slice($raw['components'], 0, 3)
@@ -224,6 +264,10 @@ class TokenImporter
         $target = $isPercent ? $this->percent($raw) : $this->pixels($raw);
         if ($target === null) {
             return ['', null, 'not a size: ' . (is_scalar($raw) ? $raw : json_encode($raw))];
+        }
+        // Figma number variables can't say "none": a site width of 0 means full width
+        if ($scale === 'container_widths' && $target == 0) {
+            $target = INF;
         }
 
         $best = null;
